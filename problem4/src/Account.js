@@ -1,30 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Loading from './Loading';
 import AccountDetails from './AccountDetails';
 import { getAccountInfo } from './accounts';
 
-class Account extends React.Component {
-  constructor() {
-    super();
+const Account = () => {
+  const [accountInfo, setAccountInfo] = useState(null);
 
-    this.state = {
-      accountInfo: false
-    }
-  }
+  useEffect(() => {
+    (async () => {
+      setAccountInfo(await getAccountInfo());
+    })();
+  }, []);
 
-  componentDidMount() {
-    getAccountInfo().then((info) => {
-      this.setState({accountInfo: info});
-    });
-  }
-
-  render() {
-    if(this.state.accountInfo) {
-      return <AccountDetails account={this.state.accountInfo} />;
-    } else {
-      return <Loading message="Loading..." />;
-    }
-  }
+  return accountInfo ?
+    <AccountDetails account={accountInfo} /> :
+    <Loading message="Loading..." />;
 }
 
 export default Account;
